@@ -1,0 +1,6 @@
+email,name,class,week,day,period,start,end,subject,room,teacher
+sample.student@example.com,Sample Student,Y7,A,Mon,F,08:00,08:40,Key Stage 3 Form,A121,Ms Williams
+sample.student@example.com,Sample Student,Y7,A,Mon,P1,08:40,09:30,Mathematics,A120,Mr Lee
+sample.student@example.com,Sample Student,Y7,A,Mon,P2,09:30,10:20,English,A221,Ms Carter
+sample.student@example.com,Sample Student,Y7,B,Mon,F,08:00,08:40,Key Stage 3 Form,A121,Ms Williams
+sample.student@example.com,Sample Student,Y7,B,Mon,P1,08:40,09:30,Biology,A306,Dr Tan

@@ -1,0 +1,12 @@
+{
+  "name": "powiis-campus-navigator-github-pages-demo",
+  "version": "2.9.0-pages.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,5 @@
+email,name,class,week,day,period,start,end,subject,room,teacher
+student.one@student.powiis.edu.my,Student One,Year 9,A,Mon,F,08:00,08:40,KS3 Form,A121,Mr Withers
+student.one@student.powiis.edu.my,Student One,Year 9,A,Mon,P1,08:40,09:30,Math,A120,Mr L Lim
+student.one@student.powiis.edu.my,Student One,Year 9,B,Mon,P1,08:40,09:30,Biology,A306,Mr Toh
+student.two@student.powiis.edu.my,Student Two,Year 11,A,Mon,P1,08:40,09:30,Chemistry,A317,Dr Sheikh

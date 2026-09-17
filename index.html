@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+<title>POWIIS Balik Pulau — Campus Navigator</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lora:wght@600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./styles.css">
+<link rel="icon" href="./powiis.png">
+<script id="bootstrap" type="application/json">{"authenticated":false,"user":null,"timetable":null,"error":null}</script>
+<script src="./static-api.js"></script>
+</head>
+<body>
+<!-- Any JavaScript error or CSP violation is reported here, visibly. -->
+<div class="err-banner" id="err-banner" role="alert"></div>
+
+<!-- ================= LOGIN ================= -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="./powiis.png" width="76" height="76" alt="" data-image-fallback>
+      <div class="lf u-hide">PW<br>IIS</div>
+    </div>
+    <div class="login-title">Campus Navigator</div>
+    <div class="login-sub">Prince of Wales Island International School</div>
+    <div class="login-div"></div>
+    <noscript>
+      <div class="login-err show">JavaScript is disabled. Sign-in still works —
+      the map needs JavaScript to display.</div>
+    </noscript>
+
+    <div class="demo-login" data-demo-auth>
+      <div class="demo-heading">Choose a demo account</div>
+      <form method="post" action="./" data-demo-account="user">
+        <input type="hidden" name="account" value="user">
+        <button class="demo-account demo-account-user" type="submit">
+          <span class="demo-role">User</span>
+          <span class="demo-description">View a sample Year 10 timetable and campus map</span>
+        </button>
+      </form>
+      <form method="post" action="./" data-demo-account="admin">
+        <input type="hidden" name="account" value="admin">
+        <button class="demo-account demo-account-admin" type="submit">
+          <span class="demo-role">Administrator</span>
+          <span class="demo-description">Open the student and timetable management panel</span>
+        </button>
+      </form>
+      <div class="demo-warning">Synthetic demo data only. No password or Google account is required.</div>
+      <button class="demo-reset" id="reset-demo-data" type="button">Reset browser demo data</button>
+      <div class="demo-reset-status" id="reset-demo-status" role="status" aria-live="polite"></div>
+    </div>
+
+    <a class="gbtn" id="google-signin" data-google-auth hidden href="./" rel="nofollow">
+      <svg class="gicon" viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h11.8c-.5 2.7-2.1 5-4.4 6.6v5.5h7.1c4.2-3.8 6.6-9.5 6.6-16.1z"/>
+        <path fill="#34A853" d="M24 46c6 0 11-2 14.6-5.4l-7.1-5.5c-2 1.3-4.5 2.1-7.5 2.1-5.8 0-10.7-3.9-12.400-9.1H4.3v5.7C7.9 41.1 15.4 46 24 46z"/>
+        <path fill="#FBBC05" d="M11.6 28.1c-.5-1.3-.7-2.7-.7-4.1s.3-2.8.7-4.1v-5.7H4.3C2.8 17.1 2 20.4 2 24s.8 6.9 2.3 9.8l7.3-5.7z"/>
+        <path fill="#EA4335" d="M24 10.8c3.3 0 6.2 1.1 8.5 3.3l6.3-6.3C35 4.2 30 2 24 2 15.4 2 7.9 6.9 4.3 14.2l7.3 5.7c1.7-5.2 6.6-9.1 12.4-9.1z"/>
+      </svg>
+      Sign in with Google
+    </a>
+
+    <div class="demo-note" data-google-auth hidden>
+      Use your school Google account.<br>
+      Your timetable loads automatically once signed in.
+    </div>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app">
+<aside class="sidebar">
+  <div class="school-header">
+    <div class="hi">
+      <div class="logo-wrap">
+        <img src="./powiis.png" width="48" height="48" alt="" data-image-fallback>
+        <div class="logo-fallback u-hide">PW<br>IIS</div>
+      </div>
+      <div>
+        <div class="sname">Prince of Wales Island<br>International School</div>
+        <div class="sloc">Balik Pulau · Penang, Malaysia</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- signed-in user -->
+  <div class="user-chip">
+    <img class="uc-av" id="uc-avatar" alt="" width="30" height="30">
+    <div class="uc-info">
+      <div class="skeleton-block">
+        <span class="skel-dark skel-line w70"></span>
+        <span class="skel-dark skel-line w90 h8"></span>
+      </div>
+      <div class="real-block">
+        <div class="uc-name" id="uc-name">—</div>
+        <div class="uc-mail" id="uc-mail">—</div>
+      </div>
+    </div>
+    <form method="post" action="./" class="u-m0" id="demo-signout">
+        <button class="uc-out" id="signout" type="submit">Sign out</button>
+      </form>
+  </div>
+
+  <div class="week-bar">
+    <div class="wk-left">
+      <div class="wk-label-sm">Active Timetable</div>
+      <div class="wk-name" id="wk-name">Week A</div>
+      <div class="wk-sub" id="wk-sub">Timetable Week 1</div>
+    </div>
+    <div class="toggle-wrap">
+      <span class="wk-letter on" id="lbl-a">A</span>
+      <label class="toggle-sw"><input type="checkbox" id="week-toggle"><span class="sl"></span></label>
+      <span class="wk-letter" id="lbl-b">B</span>
+    </div>
+  </div>
+
+  <div class="clock-bar">
+    <div class="clock-info">
+      <div class="clock-time"><span id="clock-hm">12:00</span><span class="clock-ampm" id="clock-ampm">PM</span></div>
+      <div class="clock-sub" id="date-display">Loading…</div>
+    </div>
+    <div class="p-pill" id="p-badge">—</div>
+  </div>
+
+  <div class="stu-panel show" id="stu-panel">
+    <div class="skeleton-block">
+      <span class="skel skel-line w58 h18"></span>
+      <span class="skel skel-line w38 h9"></span>
+    </div>
+    <div class="real-block">
+      <div class="sn" id="sn">—</div>
+      <div class="sc" id="sc">—</div>
+    </div>
+    <div class="loc-card">
+      <div class="lci">
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+      </div>
+      <div class="u-flex1">
+        <div class="lcl">Currently In</div>
+        <div class="skeleton-block">
+          <span class="skel-dark skel-line w80 h14"></span>
+          <span class="skel-dark skel-line w55 h9"></span>
+        </div>
+        <div class="real-block">
+          <div class="lcr" id="lcr">—</div>
+          <div class="lct" id="lct"></div>
+          <div class="floor-tag" id="floor-tag"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tt-sec show" id="tt-sec">
+    <div class="tt-top">
+      <span class="field-label u-mb0">Schedule</span>
+      <span id="tt-wk" class="u-wklbl">— Week A</span>
+    </div>
+    <div class="day-tabs" id="day-tabs"></div>
+    <div class="skeleton-block" id="p-skeleton">
+      <div class="skel-row"><span class="skel skel-dot"></span><span class="skel-body"><span class="skel skel-line w45 h8"></span><span class="skel skel-line w72"></span></span></div>
+      <div class="skel-row"><span class="skel skel-dot"></span><span class="skel-body"><span class="skel skel-line w40 h8"></span><span class="skel skel-line w64"></span></span></div>
+      <div class="skel-row"><span class="skel skel-dot"></span><span class="skel-body"><span class="skel skel-line w48 h8"></span><span class="skel skel-line w80"></span></span></div>
+      <div class="skel-row"><span class="skel skel-dot"></span><span class="skel-body"><span class="skel skel-line w36 h8"></span><span class="skel skel-line w58"></span></span></div>
+      <div class="skel-row"><span class="skel skel-dot"></span><span class="skel-body"><span class="skel skel-line w44 h8"></span><span class="skel skel-line w70"></span></span></div>
+    </div>
+    <div class="p-list real-block" id="p-list"></div>
+  </div>
+
+  <!-- Head teacher only -->
+  <div class="cfg-bar" id="admin-tab" hidden>
+    <button class="cfg-toggle" id="admin-toggle" type="button"
+            aria-haspopup="dialog" aria-controls="admin-modal">
+      <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.09a2 2 0 0 1 1 1.74v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+      Manage students and timetables
+    </button>
+  </div>
+</aside>
+
+<main class="map-area">
+  <div class="map-topbar">
+    <div class="map-title">
+      <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Z"/><path d="M9 3v15"/><path d="M15 6v15"/>
+      </svg>
+      POWIIS Balik Pulau · Campus Map
+    </div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot leg-boarding"></div>Boarding</div>
+      <div class="leg"><div class="leg-dot leg-facilities"></div>Facilities</div>
+      <div class="leg"><div class="leg-dot leg-offices"></div>Offices</div>
+      <div class="leg"><div class="leg-dot leg-maths"></div>Maths</div>
+      <div class="leg"><div class="leg-dot leg-arts"></div>Art/Hum/DT</div>
+      <div class="leg"><div class="leg-dot leg-floor-2"></div>2nd Floor</div>
+      <div class="leg"><div class="leg-dot leg-floor-3"></div>3rd Floor</div>
+      <div class="leg"><div class="leg-dot leg-location"></div>Your Location</div>
+    </div>
+    <div class="map-ctrl">
+      <button class="ctrl-btn" id="zin" type="button" title="Zoom in" aria-label="Zoom in">
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      </button>
+      <button class="ctrl-btn" id="zout" type="button" title="Zoom out" aria-label="Zoom out">
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/></svg>
+      </button>
+      <button class="ctrl-btn" id="zrst" type="button" title="Reset map view" aria-label="Reset map view">
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 11 9-9 9 9"/><path d="M5 10v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V10"/><path d="M9 22v-8h6v8"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="svg-vp" id="vp">
+    <div class="floor-sw">
+      <button class="floor-btn active" data-floor="0" type="button"><span class="fd fd-ground"></span>Ground Floor</button>
+      <button class="floor-btn" data-floor="1" type="button"><span class="fd fd-first"></span>1st Floor</button>
+      <button class="floor-btn" data-floor="2" type="button"><span class="fd fd-second"></span>2nd Floor</button>
+      <button class="floor-btn" data-floor="3" type="button"><span class="fd fd-third"></span>3rd Floor</button>
+    </div>
+    <div class="pan-hint">
+      <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 2v20"/><path d="m15 19-3 3-3-3"/><path d="m19 9 3 3-3 3"/><path d="M2 12h20"/><path d="m5 9-3 3 3 3"/><path d="m9 5 3-3 3 3"/>
+      </svg>
+      Swipe or wheel to pan · Pinch to zoom · Drag to pan
+    </div>
+
+<div class="floor-map active" id="floor-0">
+<svg id="svg-0" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<filter id="sh0"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,.55)"/></filter>
+<symbol id="icon-book-open" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V5a2 2 0 0 1 2-2h5a3 3 0 0 1 3 3v15a3 3 0 0 0-3-3Z"/><path d="M21 18a1 1 0 0 0 1-1V5a2 2 0 0 0-2-2h-5a3 3 0 0 0-3 3v15a3 3 0 0 1 3-3Z"/></symbol>
+<symbol id="icon-door-open" viewBox="0 0 24 24"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.52-1.94l5-1.25A1 1 0 0 1 13 3.34Z"/></symbol>
+<symbol id="icon-bus-front" viewBox="0 0 24 24"><path d="M4 6 2 7"/><path d="m10 6 2-2 2 2"/><path d="m22 7-2-1"/><rect width="16" height="16" x="4" y="3" rx="2"/><path d="M4 11h16"/><path d="M8 15h.01"/><path d="M16 15h.01"/><path d="M6 19v2"/><path d="M18 21v-2"/></symbol>
+</defs>
+<rect id="BOYS_BOARDING" class="room" x="0" y="0" width="966" height="60" rx="4" fill="#5e007e" filter="url(#sh0)"/>
+<text x="483" y="30" text-anchor="middle" dominant-baseline="central" fill="white" font-size="19" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Boys Boarding</text>
+<rect id="BACK_COURT" class="room" x="972" y="0" width="228" height="126" rx="4" fill="#0571d3" filter="url(#sh0)"/>
+<text x="1086" y="63" text-anchor="middle" dominant-baseline="central" fill="white" font-size="14" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Back Court</text>
+<rect id="GIRLS_BOARDING" class="room" x="0" y="66" width="966" height="60" rx="4" fill="#5e007e" filter="url(#sh0)"/>
+<text x="483" y="96" text-anchor="middle" dominant-baseline="central" fill="white" font-size="19" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Girls Boarding</text>
+
+<rect id="CAN" class="room" x="0" y="132" width="240" height="190" rx="4" fill="#a6a6a6" filter="url(#sh0)"/>
+<text x="120" y="227" text-anchor="middle" dominant-baseline="central" fill="white" font-size="17" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Canteen</text>
+<rect id="MIDDLE_PITCH" class="room" x="246" y="132" width="720" height="190" rx="4" fill="#0571d3" filter="url(#sh0)"/>
+<text x="606" y="227" text-anchor="middle" dominant-baseline="central" fill="white" font-size="22" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Middle Pitch</text>
+<rect id="GYM" class="room" x="972" y="132" width="228" height="92" rx="4" fill="#0571d3" filter="url(#sh0)"/>
+<text x="1086" y="178" text-anchor="middle" dominant-baseline="central" fill="white" font-size="14" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Gym</text>
+<rect id="POOL" class="room" x="972" y="230" width="228" height="92" rx="4" fill="#0571d3" filter="url(#sh0)"/>
+<text x="1086" y="276" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Swimming Pool</text>
+
+<rect x="0" y="366" width="60" height="46" rx="3" fill="#a6a6a6"/>
+<text x="30" y="382" text-anchor="middle" dominant-baseline="central" fill="white" font-size="7.5" font-family="DM Sans,sans-serif">Visitor</text>
+<text x="30" y="396" text-anchor="middle" dominant-baseline="central" fill="white" font-size="7.5" font-family="DM Sans,sans-serif">Toilet</text>
+
+<rect id="A005" class="room" x="66" y="328" width="126" height="202" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="129" y="418" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A005</text>
+<text x="129" y="436" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Dance Hall /</text>
+<text x="129" y="450" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Lecture Room</text>
+
+<rect id="A008" class="room" x="198" y="328" width="110" height="76" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="253" y="358" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A008</text>
+<text x="253" y="374" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">PE Office</text>
+
+<rect id="A007" class="room" x="198" y="410" width="110" height="76" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="253" y="440" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A007 / A006</text>
+<text x="253" y="456" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">PE Storage</text>
+
+<rect id="A009" class="room" x="198" y="492" width="110" height="38" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="253" y="511" text-anchor="middle" dominant-baseline="central" fill="white" font-size="10" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A009 — Security</text>
+
+<rect id="A010" class="room" x="314" y="328" width="116" height="76" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="372" y="358" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A010</text>
+<text x="372" y="374" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">School Shop</text>
+
+<rect x="435" y="328" width="100" height="76" rx="4" fill="#a6a6a6"/>
+<text x="485" y="358" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-family="DM Sans,sans-serif">Stairway</text>
+<text x="485" y="374" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-family="DM Sans,sans-serif">&amp; Lift</text>
+
+<rect id="A015" class="room" x="540" y="328" width="116" height="76" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="598" y="358" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A015</text>
+<text x="598" y="374" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Meeting Room</text>
+
+<rect id="A016" class="room" x="661" y="328" width="146" height="76" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="734" y="358" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A016</text>
+<text x="734" y="374" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Management Offices</text>
+
+<rect id="A020" class="room" x="812" y="328" width="116" height="76" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="870" y="358" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A020</text>
+<text x="870" y="374" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Staff Lounge</text>
+
+<rect x="933" y="328" width="42" height="76" rx="3" fill="#ff66c4"/>
+<text x="954" y="366" text-anchor="middle" dominant-baseline="central" fill="white" font-size="15" font-weight="700" font-family="DM Sans,sans-serif">F</text>
+<rect x="981" y="328" width="42" height="76" rx="3" fill="#5170ff"/>
+<text x="1002" y="366" text-anchor="middle" dominant-baseline="central" fill="white" font-size="15" font-weight="700" font-family="DM Sans,sans-serif">M</text>
+
+<rect id="LIBRARY" class="room" x="1030" y="328" width="170" height="202" rx="4" fill="#046228" filter="url(#sh0)"/>
+<use href="#icon-book-open" x="1066" y="408" width="20" height="20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+<text x="1128" y="420" text-anchor="middle" dominant-baseline="central" fill="white" font-size="14" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Library</text>
+<text x="1115" y="438" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.8)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Learning Centre</text>
+
+<rect x="0" y="536" width="26" height="76" rx="3" fill="#a6a6a6"/>
+<rect id="A002" class="room" x="32" y="536" width="198" height="76" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="131" y="566" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A002</text>
+<text x="131" y="582" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Sixth Form Centre</text>
+
+<rect x="236" y="536" width="80" height="76" rx="3" fill="#a6a6a6"/>
+<text x="276" y="562" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">Head of</text>
+<text x="276" y="574" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">Sixth Form</text>
+<text x="276" y="586" text-anchor="middle" dominant-baseline="central" fill="white" font-size="7.5" font-family="DM Sans,sans-serif">Centre</text>
+<rect x="322" y="536" width="82" height="36" rx="3" fill="#a6a6a6"/>
+<text x="363" y="554" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">HR Office</text>
+<rect x="322" y="576" width="82" height="36" rx="3" fill="#a6a6a6"/>
+<text x="363" y="594" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">Marketing</text>
+
+<rect id="RECEPTION" class="room" x="410" y="536" width="122" height="76" rx="4" fill="#a6a6a6" filter="url(#sh0)"/>
+<text x="471" y="566" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-family="DM Sans,sans-serif">Reception</text>
+<text x="471" y="582" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-family="DM Sans,sans-serif">&amp; Lobby</text>
+
+<rect id="A024" class="room" x="538" y="536" width="116" height="76" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="596" y="566" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A024</text>
+<text x="596" y="582" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">School Office</text>
+
+<rect id="A023" class="room" x="660" y="536" width="222" height="76" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="771" y="562" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A023</text>
+<text x="771" y="578" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.8)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Recital Room · ECA Jazz Band</text>
+
+<rect id="A021" class="room" x="888" y="536" width="80" height="76" rx="4" fill="#046228" filter="url(#sh0)"/>
+<text x="928" y="562" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A021</text>
+<text x="928" y="578" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Medical</text>
+<rect x="974" y="536" width="26" height="76" rx="3" fill="#a6a6a6"/>
+<rect x="410" y="618" width="122" height="36" rx="4" fill="#a6a6a6"/>
+<use href="#icon-door-open" x="434" y="627" width="17" height="17" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+<text x="481" y="636" text-anchor="middle" dominant-baseline="central" fill="white" font-size="10" font-family="DM Sans,sans-serif">Front Door</text>
+
+<rect id="BASKETBALL" class="room" x="0" y="660" width="146" height="164" rx="4" fill="#0571d3" filter="url(#sh0)"/>
+<text x="73" y="734" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Basketball</text>
+<text x="73" y="752" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Court</text>
+<rect id="FF" class="room" x="152" y="660" width="848" height="164" rx="4" fill="#0571d3" filter="url(#sh0)"/>
+<rect x="212" y="678" width="728" height="128" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="2" rx="2"/>
+<ellipse cx="576" cy="742" rx="40" ry="40" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="2"/>
+<line x1="576" y1="678" x2="576" y2="806" stroke="rgba(255,255,255,.15)" stroke-width="1.5"/>
+<text x="576" y="735" text-anchor="middle" dominant-baseline="central" fill="white" font-size="20" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Front Pitch (FF)</text>
+<text x="576" y="758" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.6)" font-size="9.5" font-family="DM Sans,sans-serif" pointer-events="none">Outdoor PE · Football · Athletics</text>
+<rect id="OFFSITE" class="room" x="1006" y="660" width="194" height="96" rx="4" fill="rgba(40,40,40,.75)"/>
+<use href="#icon-bus-front" x="1063" y="690" width="19" height="19" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+<text x="1120" y="700" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Off Site</text>
+<text x="1103" y="718" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.5)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">External Activity</text>
+</svg>
+</div>
+
+<!-- ══════════ 1ST FLOOR ══════════ -->
+<div class="floor-map" id="floor-1">
+<svg id="svg-1" viewBox="0 0 1650 460" xmlns="http://www.w3.org/2000/svg">
+<defs><filter id="sh1"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,.55)"/></filter></defs>
+<rect id="B101b" class="room" x="128" y="8" width="126" height="126" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="191" y="64" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">B101b</text>
+<text x="191" y="82" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9.5" font-family="DM Sans,sans-serif" pointer-events="none">Art</text>
+<rect id="B101a" class="room" x="128" y="140" width="126" height="124" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="191" y="196" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">B101a</text>
+<text x="191" y="214" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9.5" font-family="DM Sans,sans-serif" pointer-events="none">Art</text>
+<rect id="B102c" class="room" x="260" y="8" width="126" height="76" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="323" y="38" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">B102c</text>
+<text x="323" y="56" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="8.5" font-family="DM Sans,sans-serif" pointer-events="none">Design Technology</text>
+<rect id="B102b" class="room" x="260" y="90" width="126" height="100" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="323" y="132" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">B102b</text>
+<text x="323" y="150" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="8.5" font-family="DM Sans,sans-serif" pointer-events="none">Design Technology</text>
+<rect id="B102a" class="room" x="260" y="196" width="126" height="88" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="323" y="232" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">B102a</text>
+<text x="323" y="250" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="8.5" font-family="DM Sans,sans-serif" pointer-events="none">Design Technology</text>
+
+<rect id="A108" class="room" x="0" y="290" width="140" height="76" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="70" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A108</text>
+<text x="70" y="338" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Music Room</text>
+<rect id="A109" class="room" x="146" y="290" width="140" height="76" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="216" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A109</text>
+<text x="216" y="338" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Computing Room</text>
+<rect x="292" y="290" width="96" height="36" rx="3" fill="#a6a6a6"/>
+<text x="340" y="308" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">A112 Meeting Room</text>
+<rect x="292" y="330" width="96" height="36" rx="3" fill="#a6a6a6"/>
+<text x="340" y="348" text-anchor="middle" dominant-baseline="central" fill="white" font-size="7.5" font-family="DM Sans,sans-serif">A111 Year Leader Office</text>
+<rect id="A113" class="room" x="394" y="290" width="130" height="76" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="459" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A113</text>
+<text x="459" y="338" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Humanities</text>
+<rect x="530" y="290" width="108" height="76" rx="4" fill="#a6a6a6"/>
+<text x="584" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-family="DM Sans,sans-serif">Stairway</text>
+<text x="584" y="338" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-family="DM Sans,sans-serif">&amp; Lift</text>
+<rect id="A115" class="room" x="644" y="290" width="148" height="76" rx="4" fill="#ee0000" filter="url(#sh1)"/>
+<text x="718" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A115</text>
+<text x="718" y="338" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.8)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Mathematics</text>
+<rect id="A116" class="room" x="798" y="290" width="148" height="76" rx="4" fill="#ee0000" filter="url(#sh1)"/>
+<text x="872" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A116</text>
+<text x="872" y="338" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.8)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Mathematics</text>
+<rect id="A117" class="room" x="952" y="290" width="148" height="76" rx="4" fill="#ee0000" filter="url(#sh1)"/>
+<text x="1026" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A117</text>
+<text x="1026" y="338" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.8)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Mathematics</text>
+<rect x="1106" y="290" width="42" height="76" rx="3" fill="#ff66c4"/>
+<text x="1127" y="328" text-anchor="middle" dominant-baseline="central" fill="white" font-size="15" font-weight="700" font-family="DM Sans,sans-serif">F</text>
+<rect x="1154" y="290" width="42" height="76" rx="3" fill="#5170ff"/>
+<text x="1175" y="328" text-anchor="middle" dominant-baseline="central" fill="white" font-size="15" font-weight="700" font-family="DM Sans,sans-serif">M</text>
+<rect x="1202" y="290" width="58" height="76" rx="3" fill="#a6a6a6"/>
+<text x="1231" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">Staff</text>
+<text x="1231" y="338" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">Toilet</text>
+<rect id="AUDITORIUM" class="room" x="1476" y="280" width="148" height="172" rx="4" fill="#ee0000" filter="url(#sh1)"/>
+<text x="1550" y="366" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Auditorium</text>
+
+<rect x="0" y="372" width="26" height="76" rx="3" fill="#a6a6a6"/>
+<rect x="32" y="372" width="28" height="76" rx="3" fill="#a6a6a6"/>
+<text x="46" y="410" text-anchor="middle" dominant-baseline="central" fill="white" font-size="7.5" font-family="DM Sans,sans-serif">Fire</text>
+<rect id="A107" class="room" x="66" y="372" width="78" height="76" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="105" y="410" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A107</text>
+<rect id="A106" class="room" x="150" y="372" width="76" height="76" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="188" y="410" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A106</text>
+<rect id="A105" class="room" x="232" y="372" width="110" height="76" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="287" y="410" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A105</text>
+<rect id="A104" class="room" x="348" y="372" width="118" height="76" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="407" y="410" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A104</text>
+<rect id="A103" class="room" x="472" y="372" width="118" height="76" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="531" y="410" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A103</text>
+<rect id="A102" class="room" x="596" y="372" width="118" height="76" rx="4" fill="#ff914d" filter="url(#sh1)"/>
+<text x="655" y="410" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A102</text>
+<rect x="720" y="372" width="116" height="76" rx="4" fill="#a6a6a6"/>
+<text x="778" y="410" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-family="DM Sans,sans-serif">Board Room</text>
+<rect id="A122" class="room" x="842" y="372" width="148" height="76" rx="4" fill="#ee0000" filter="url(#sh1)"/>
+<text x="916" y="410" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A122</text>
+<rect id="A121" class="room" x="996" y="372" width="148" height="76" rx="4" fill="#ee0000" filter="url(#sh1)"/>
+<text x="1070" y="400" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A121</text>
+<text x="1070" y="420" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.8)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">KS3 Form Room</text>
+<rect id="A120" class="room" x="1150" y="372" width="148" height="76" rx="4" fill="#ee0000" filter="url(#sh1)"/>
+<text x="1224" y="410" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A120</text>
+<rect id="A118" class="room" x="1304" y="372" width="134" height="76" rx="4" fill="#ee0000" filter="url(#sh1)"/>
+<text x="1371" y="410" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A118</text>
+<rect x="1444" y="372" width="26" height="76" rx="3" fill="#a6a6a6"/>
+</svg>
+</div>
+
+<!-- ══════════ 2ND FLOOR ══════════ -->
+<div class="floor-map" id="floor-2">
+<svg id="svg-2" viewBox="0 0 1640 456" xmlns="http://www.w3.org/2000/svg">
+<defs><filter id="sh2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,.55)"/></filter></defs>
+<rect id="MPH" class="room" x="128" y="8" width="196" height="268" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="226" y="134" text-anchor="middle" dominant-baseline="central" fill="white" font-size="17" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">MPH</text>
+<text x="226" y="154" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="10" font-family="DM Sans,sans-serif" pointer-events="none">Multi-Purpose Hall</text>
+<rect id="PAA" class="room" x="1344" y="200" width="272" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="1480" y="238" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">PAA Room / Green Room</text>
+<rect id="AUD_BALCONY" class="room" x="1344" y="282" width="272" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="1480" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Auditorium Balcony</text>
+
+<rect id="DRAMA" class="room" x="0" y="282" width="168" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="84" y="312" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">Drama Studio</text>
+<text x="84" y="330" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">A209</text>
+<rect id="A211" class="room" x="174" y="282" width="92" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="220" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A211</text>
+<rect id="A212" class="room" x="272" y="282" width="92" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="318" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A212</text>
+<rect id="A213" class="room" x="370" y="282" width="92" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="416" y="312" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A213</text>
+<text x="416" y="330" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="8" font-family="DM Sans,sans-serif" pointer-events="none">PSHE / Humanities</text>
+<rect x="468" y="282" width="108" height="76" rx="4" fill="#a6a6a6"/>
+<text x="522" y="312" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-family="DM Sans,sans-serif">Stairway</text>
+<text x="522" y="330" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-family="DM Sans,sans-serif">&amp; Lift</text>
+<rect id="A215" class="room" x="582" y="282" width="158" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="661" y="312" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A215</text>
+<text x="661" y="330" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Mandarin</text>
+<rect id="A216" class="room" x="746" y="282" width="158" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="825" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A216</text>
+<rect id="A217" class="room" x="910" y="282" width="158" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="989" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A217</text>
+<rect x="1074" y="282" width="42" height="76" rx="3" fill="#ff66c4"/>
+<text x="1095" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="15" font-weight="700" font-family="DM Sans,sans-serif">F</text>
+<rect x="1122" y="282" width="42" height="76" rx="3" fill="#5170ff"/>
+<text x="1143" y="320" text-anchor="middle" dominant-baseline="central" fill="white" font-size="15" font-weight="700" font-family="DM Sans,sans-serif">M</text>
+<rect x="1170" y="282" width="58" height="76" rx="3" fill="#a6a6a6"/>
+<text x="1199" y="312" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">Staff</text>
+<text x="1199" y="330" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">Toilet</text>
+
+<rect x="0" y="364" width="26" height="76" rx="3" fill="#a6a6a6"/>
+<rect id="A205" class="room" x="32" y="364" width="116" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="90" y="394" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A205</text>
+<text x="90" y="412" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Spanish</text>
+<rect id="A204" class="room" x="154" y="364" width="116" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="212" y="392" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A204</text>
+<text x="212" y="410" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="8.5" font-family="DM Sans,sans-serif" pointer-events="none">Bahasa Malaysia</text>
+<rect id="A203b" class="room" x="276" y="364" width="104" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="328" y="402" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A203b</text>
+<rect id="A203a" class="room" x="386" y="364" width="104" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="438" y="402" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A203a</text>
+<rect id="A202" class="room" x="496" y="364" width="116" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="554" y="402" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A202</text>
+<rect id="A201" class="room" x="618" y="364" width="116" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="676" y="402" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A201</text>
+<rect id="A222b" class="room" x="740" y="364" width="104" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="792" y="402" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A222b</text>
+<rect id="A222" class="room" x="850" y="364" width="116" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="908" y="402" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A222</text>
+<rect id="A221" class="room" x="972" y="364" width="116" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="1030" y="392" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A221</text>
+<text x="1030" y="410" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">English</text>
+<rect id="A220" class="room" x="1094" y="364" width="116" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="1152" y="402" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A220</text>
+<rect id="A219" class="room" x="1216" y="364" width="52" height="76" rx="4" fill="#a6a6a6"/>
+<text x="1242" y="402" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-family="DM Sans,sans-serif">A219</text>
+<rect id="A218" class="room" x="1274" y="364" width="52" height="76" rx="4" fill="#a6a6a6"/>
+<text x="1300" y="390" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-family="DM Sans,sans-serif">A218</text>
+<text x="1300" y="408" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">EAL</text>
+<rect x="1332" y="364" width="26" height="76" rx="3" fill="#a6a6a6"/>
+<rect id="C203" class="room" x="1364" y="364" width="116" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="1422" y="402" text-anchor="middle" dominant-baseline="central" fill="white" font-size="10" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">C203 / C204</text>
+<rect id="C202" class="room" x="1486" y="364" width="84" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="1528" y="402" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">C202</text>
+<rect id="C201" class="room" x="1576" y="364" width="60" height="76" rx="4" fill="#7ed957" filter="url(#sh2)"/>
+<text x="1606" y="402" text-anchor="middle" dominant-baseline="central" fill="white" font-size="11" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">C201</text>
+</svg>
+</div>
+
+<!-- ══════════ 3RD FLOOR ══════════ -->
+<div class="floor-map" id="floor-3">
+<svg id="svg-3" viewBox="0 0 1760 220" xmlns="http://www.w3.org/2000/svg">
+<defs><filter id="sh3"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,.55)"/></filter></defs>
+<rect id="A309" class="room" x="0" y="40" width="144" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="72" y="78" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A309</text>
+<rect id="A310" class="room" x="150" y="40" width="144" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="222" y="78" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A310</text>
+<rect id="A311" class="room" x="300" y="40" width="144" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="372" y="70" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A311</text>
+<text x="372" y="88" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Physics Lab</text>
+<rect x="450" y="40" width="108" height="76" rx="4" fill="#a6a6a6"/>
+<text x="504" y="70" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-family="DM Sans,sans-serif">Stairway</text>
+<text x="504" y="88" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9.5" font-family="DM Sans,sans-serif">&amp; Lift</text>
+<rect x="564" y="40" width="164" height="76" rx="4" fill="#a6a6a6"/>
+<text x="646" y="70" text-anchor="middle" dominant-baseline="central" fill="white" font-size="10" font-family="DM Sans,sans-serif">A315</text>
+<text x="646" y="88" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-family="DM Sans,sans-serif">Physics Prep Room</text>
+<rect id="A316" class="room" x="734" y="40" width="144" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="806" y="78" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A316</text>
+<rect id="A317" class="room" x="884" y="40" width="144" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="956" y="70" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A317</text>
+<text x="956" y="88" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Chemistry Lab</text>
+<rect x="1034" y="40" width="42" height="76" rx="3" fill="#ff66c4"/>
+<text x="1055" y="78" text-anchor="middle" dominant-baseline="central" fill="white" font-size="15" font-weight="700" font-family="DM Sans,sans-serif">F</text>
+<rect x="1082" y="40" width="42" height="76" rx="3" fill="#5170ff"/>
+<text x="1103" y="78" text-anchor="middle" dominant-baseline="central" fill="white" font-size="15" font-weight="700" font-family="DM Sans,sans-serif">M</text>
+<rect x="1130" y="40" width="58" height="76" rx="3" fill="#a6a6a6"/>
+<text x="1159" y="70" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">Staff</text>
+<text x="1159" y="88" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">Toilet</text>
+
+<rect x="0" y="122" width="26" height="76" rx="3" fill="#a6a6a6"/>
+<rect x="32" y="122" width="28" height="76" rx="3" fill="#a6a6a6"/>
+<text x="46" y="160" text-anchor="middle" dominant-baseline="central" fill="white" font-size="7.5" font-family="DM Sans,sans-serif">Fire</text>
+<rect id="A308" class="room" x="66" y="122" width="72" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="102" y="160" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A308</text>
+<rect x="144" y="122" width="82" height="76" rx="4" fill="#a6a6a6"/>
+<text x="185" y="152" text-anchor="middle" dominant-baseline="central" fill="white" font-size="9" font-family="DM Sans,sans-serif">A307</text>
+<text x="185" y="168" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8" font-family="DM Sans,sans-serif">Prayer Room</text>
+<rect id="A306" class="room" x="232" y="122" width="118" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="291" y="152" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A306</text>
+<text x="291" y="170" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Biology Lab</text>
+<rect id="A305" class="room" x="356" y="122" width="118" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="415" y="160" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A305</text>
+<rect id="A304" class="room" x="480" y="122" width="118" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="539" y="160" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A304</text>
+<rect x="604" y="122" width="74" height="76" rx="4" fill="#a6a6a6"/>
+<text x="641" y="152" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8.5" font-family="DM Sans,sans-serif">A303</text>
+<text x="641" y="168" text-anchor="middle" dominant-baseline="central" fill="white" font-size="7.5" font-family="DM Sans,sans-serif">SEN Office</text>
+<rect x="684" y="122" width="74" height="76" rx="4" fill="#a6a6a6"/>
+<text x="721" y="152" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8.5" font-family="DM Sans,sans-serif">A302</text>
+<text x="721" y="168" text-anchor="middle" dominant-baseline="central" fill="white" font-size="7.5" font-family="DM Sans,sans-serif">Science Office</text>
+<rect x="764" y="122" width="70" height="76" rx="4" fill="#a6a6a6"/>
+<text x="799" y="152" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8.5" font-family="DM Sans,sans-serif">A301</text>
+<text x="799" y="168" text-anchor="middle" dominant-baseline="central" fill="white" font-size="7.5" font-family="DM Sans,sans-serif">Science Office</text>
+<rect id="A322" class="room" x="840" y="122" width="144" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="912" y="152" text-anchor="middle" dominant-baseline="central" fill="white" font-size="13" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A322</text>
+<text x="912" y="170" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Physics Lab 2</text>
+<rect x="990" y="122" width="166" height="76" rx="4" fill="#a6a6a6"/>
+<text x="1073" y="152" text-anchor="middle" dominant-baseline="central" fill="white" font-size="10" font-family="DM Sans,sans-serif">A321</text>
+<text x="1073" y="170" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8.5" font-family="DM Sans,sans-serif">Chem Prep Room</text>
+<rect id="A320" class="room" x="1162" y="122" width="116" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="1220" y="152" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">A320</text>
+<text x="1220" y="170" text-anchor="middle" dominant-baseline="central" fill="rgba(255,255,255,.85)" font-size="9" font-family="DM Sans,sans-serif" pointer-events="none">Biology Lab 2</text>
+<rect x="1284" y="122" width="52" height="76" rx="4" fill="#a6a6a6"/>
+<text x="1310" y="152" text-anchor="middle" dominant-baseline="central" fill="white" font-size="8.5" font-family="DM Sans,sans-serif">A318</text>
+<text x="1310" y="168" text-anchor="middle" dominant-baseline="central" fill="white" font-size="7.5" font-family="DM Sans,sans-serif">Prayer Room</text>
+<rect x="1342" y="122" width="26" height="76" rx="3" fill="#a6a6a6"/>
+<rect id="C304" class="room" x="1374" y="122" width="104" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="1426" y="160" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">C304</text>
+<rect id="C303" class="room" x="1484" y="122" width="96" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="1532" y="160" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">C303</text>
+<rect id="C302" class="room" x="1586" y="122" width="96" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="1634" y="160" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">C302</text>
+<rect id="C301" class="room" x="1688" y="122" width="72" height="76" rx="4" fill="#30b3ff" filter="url(#sh3)"/>
+<text x="1724" y="160" text-anchor="middle" dominant-baseline="central" fill="white" font-size="12" font-weight="700" font-family="DM Sans,sans-serif" pointer-events="none">C301</text>
+</svg>
+</div>
+
+    <div class="tip" id="tip"></div>
+  </div>
+</main>
+
+<dialog class="admin-modal" id="admin-modal" aria-labelledby="admin-title">
+  <div class="admin-shell">
+    <header class="admin-header">
+      <div>
+        <h2 id="admin-title">Students and timetables</h2>
+        <p>Explore synthetic timetable data. Changes stay in this browser only.</p>
+      </div>
+      <button class="icon-button admin-close" id="admin-close" type="button" aria-label="Close student management">
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </header>
+
+    <section class="admin-panel" id="admin-list-panel" aria-label="Student list">
+      <div class="admin-toolbar">
+        <label class="admin-search" for="admin-search">
+          <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="sr-only">Search students</span>
+          <input id="admin-search" type="search" placeholder="Search name, account or year" autocomplete="off">
+          <button class="icon-button search-clear" id="admin-search-clear" type="button" aria-label="Clear search" hidden>
+            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </label>
+
+        <label class="admin-select-label" for="admin-year-filter">
+          <span>Year</span>
+          <select id="admin-year-filter"><option value="">All years</option></select>
+        </label>
+        <label class="admin-select-label" for="admin-sort">
+          <span>Sort</span>
+          <select id="admin-sort">
+            <option value="az">A to Z</option>
+            <option value="za">Z to A</option>
+            <option value="year-asc">Year: low to high</option>
+            <option value="year-desc">Year: high to low</option>
+            <option value="entries-desc">Entries: high to low</option>
+            <option value="entries-asc">Entries: low to high</option>
+            <option value="email">Account email</option>
+          </select>
+        </label>
+
+        <div class="admin-actions">
+          <button class="admin-button secondary" id="admin-export" type="button">
+            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+            Export CSV
+          </button>
+          <button class="admin-button primary" id="admin-import-open" type="button">
+            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 15V3"/><path d="m17 8-5-5-5 5"/><path d="M5 21h14"/></svg>
+            Import CSV
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-list-meta">
+        <div class="filter-chips" id="admin-filter-chips" aria-label="Active filters"></div>
+        <button class="text-button" id="admin-clear-filters" type="button" hidden>Clear filters</button>
+        <span class="admin-result-count" id="admin-result-count">Loading students…</span>
+      </div>
+
+      <div class="admin-status" id="admin-status" role="status" aria-live="polite"></div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Student</th><th>Account</th><th>Year</th><th>Timetable entries</th><th>Status</th><th><span class="sr-only">Actions</span></th></tr></thead>
+          <tbody id="admin-student-rows"></tbody>
+        </table>
+        <div class="admin-empty" id="admin-empty" hidden>No students match the current filters.</div>
+      </div>
+    </section>
+
+    <section class="admin-panel admin-detail" id="admin-detail-panel" aria-labelledby="admin-detail-title" hidden>
+      <div class="detail-heading">
+        <button class="admin-button secondary compact" id="admin-detail-back" type="button">
+          <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6"/></svg>
+          Back to students
+        </button>
+        <div class="detail-heading-actions">
+          <button class="admin-button secondary compact" id="admin-detail-export" type="button">
+            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+            Export CSV
+          </button>
+          <button class="admin-button danger compact" id="admin-detail-delete" type="button">
+            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 15H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+            Delete data
+          </button>
+        </div>
+      </div>
+      <div class="student-summary">
+        <div><span>Student</span><strong id="admin-detail-title">—</strong></div>
+        <div><span>Account</span><strong id="admin-detail-email">—</strong></div>
+        <div><span>Year</span><strong id="admin-detail-year">—</strong></div>
+        <div><span>Entries</span><strong id="admin-detail-entries">—</strong></div>
+      </div>
+      <div class="admin-table-wrap detail-table-wrap">
+        <table class="admin-table detail-table">
+          <thead><tr><th>Week</th><th>Day</th><th>Period</th><th>Time</th><th>Subject</th><th>Teacher</th><th>Room</th></tr></thead>
+          <tbody id="admin-detail-rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</dialog>
+
+<dialog class="admin-subdialog" id="admin-import-dialog" aria-labelledby="admin-import-title">
+  <form method="dialog" class="subdialog-shell" id="admin-import-form">
+    <header class="subdialog-header">
+      <div><h2 id="admin-import-title">Import timetable CSV</h2><p>Validate and preview changes before any data is written.</p></div>
+      <button class="icon-button" id="admin-import-close" type="button" aria-label="Close import">
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </header>
+    <div class="subdialog-body">
+      <div class="import-controls">
+        <label class="file-picker" for="admin-csv-file">
+          <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3-3 3 3"/></svg>
+          <span><strong>Choose CSV file</strong><small id="admin-file-name">Maximum 2 MB</small></span>
+        </label>
+        <input class="sr-only" id="admin-csv-file" type="file" accept=".csv,text/csv">
+        <label class="admin-select-label import-mode" for="admin-import-mode">
+          <span>Import behaviour</span>
+          <select id="admin-import-mode">
+            <option value="merge">Add new students and replace included students</option>
+            <option value="replace">Replace the entire roster</option>
+          </select>
+        </label>
+        <p class="import-mode-help" id="admin-import-mode-help">Students included in the file receive a complete replacement timetable. Other students remain unchanged.</p>
+      </div>
+
+      <div class="admin-status" id="admin-import-status" role="status" aria-live="polite"></div>
+      <section class="import-preview" id="admin-import-preview" aria-labelledby="admin-preview-title" hidden>
+        <h3 id="admin-preview-title">Import preview</h3>
+        <dl class="preview-grid">
+          <div><dt>Students detected</dt><dd id="preview-students">0</dd></div>
+          <div><dt>Timetable rows</dt><dd id="preview-rows">0</dd></div>
+          <div><dt>New students</dt><dd id="preview-new">0</dd></div>
+          <div><dt>Existing updated</dt><dd id="preview-updated">0</dd></div>
+          <div><dt>Removed students</dt><dd id="preview-removed">0</dd></div>
+          <div><dt>Invalid rows</dt><dd id="preview-invalid">0</dd></div>
+          <div><dt>Duplicate rows skipped</dt><dd id="preview-duplicates">0</dd></div>
+          <div><dt>Resulting total</dt><dd id="preview-result">0 students</dd></div>
+        </dl>
+        <div class="preview-errors" id="admin-preview-errors" hidden>
+          <h4>Rows requiring correction</h4>
+          <ul id="admin-preview-error-list"></ul>
+        </div>
+      </section>
+    </div>
+    <footer class="subdialog-actions">
+      <button class="admin-button secondary" id="admin-import-cancel" type="button">Cancel</button>
+      <button class="admin-button primary" id="admin-import-confirm" type="button" disabled>Import data</button>
+    </footer>
+  </form>
+</dialog>
+
+<dialog class="admin-subdialog delete-dialog" id="admin-delete-dialog" aria-labelledby="admin-delete-title">
+  <div class="subdialog-shell">
+    <header class="subdialog-header"><div><h2 id="admin-delete-title">Delete timetable data?</h2></div></header>
+    <div class="subdialog-body">
+      <p>This will permanently remove <strong id="admin-delete-entries">0 timetable entries</strong> linked to:</p>
+      <p class="delete-account" id="admin-delete-account">—</p>
+      <p class="delete-warning">This only changes your browser demo. Use “Reset browser demo data” on the sign-in screen to restore it.</p>
+      <div class="admin-status" id="admin-delete-status" role="status" aria-live="polite"></div>
+    </div>
+    <footer class="subdialog-actions">
+      <button class="admin-button secondary" id="admin-delete-cancel" type="button">Cancel</button>
+      <button class="admin-button danger" id="admin-delete-confirm" type="button">Delete data</button>
+    </footer>
+  </div>
+</dialog>
+</div><!-- /#app -->
+
+<script src="./map.js"></script>
+<script src="./app.js"></script>
+<script src="./admin-filters.js"></script>
+<script src="./admin.js"></script>
+</body>
+</html>

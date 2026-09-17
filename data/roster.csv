@@ -1,0 +1,67 @@
+email,name,class,week,day,period,start,end,subject,room,teacher
+demo.user@example.com,Demo Student,Y10,A,Mon,F,08:00,08:40,Key Stage 4 Form,A116,Ms Taylor
+demo.user@example.com,Demo Student,Y10,A,Mon,P1,08:40,09:30,English,A205,Ms Carter
+demo.user@example.com,Demo Student,Y10,A,Mon,P2,09:30,10:20,Psychology,A309,Ms Chen
+demo.user@example.com,Demo Student,Y10,A,Mon,P3,10:40,11:30,Computer Science,A109,Ms Morgan
+demo.user@example.com,Demo Student,Y10,A,Mon,P4,11:30,12:20,Economics,A105,Mr Kumar
+demo.user@example.com,Demo Student,Y10,A,Mon,P5,13:10,14:00,Physics,A304,Mr Brown
+demo.user@example.com,Demo Student,Y10,A,Mon,P6,14:00,14:50,Physics,A304,Mr Brown
+demo.user@example.com,Demo Student,Y10,A,Tue,F,08:00,08:40,Key Stage 4 Form,A116,Ms Taylor
+demo.user@example.com,Demo Student,Y10,A,Tue,P1,08:40,09:30,Economics,A105,Mr Kumar
+demo.user@example.com,Demo Student,Y10,A,Tue,P2,09:30,10:20,Bahasa Malaysia,A205,Mr Rahman
+demo.user@example.com,Demo Student,Y10,A,Tue,P3,10:40,11:30,English,A221,Ms Carter
+demo.user@example.com,Demo Student,Y10,A,Tue,P4,11:30,12:20,Physics,A304,Mr Brown
+demo.user@example.com,Demo Student,Y10,A,Tue,P5,13:10,14:00,PE,MPI,Mr Clarke
+demo.user@example.com,Demo Student,Y10,A,Tue,P6,14:00,14:50,PE,MPI,Mr Clarke
+demo.user@example.com,Demo Student,Y10,A,Wed,F,08:00,08:40,Key Stage 4 Form,A116,Ms Taylor
+demo.user@example.com,Demo Student,Y10,A,Wed,P1,08:40,09:30,Physics,A304,Mr Brown
+demo.user@example.com,Demo Student,Y10,A,Wed,P2,09:30,10:20,Chemistry,A320,Dr Shah
+demo.user@example.com,Demo Student,Y10,A,Wed,P3,10:40,11:30,English,A221,Ms Carter
+demo.user@example.com,Demo Student,Y10,A,Wed,P4,11:30,12:20,Mathematics,A120,Mr Lee
+demo.user@example.com,Demo Student,Y10,A,Wed,P5,13:10,14:00,Bahasa Malaysia,A205,Mr Rahman
+demo.user@example.com,Demo Student,Y10,A,Wed,P6,14:00,14:50,Bahasa Malaysia,A205,Mr Rahman
+demo.user@example.com,Demo Student,Y10,A,Thu,F,08:00,08:40,Key Stage 4 Form,A116,Ms Taylor
+demo.user@example.com,Demo Student,Y10,A,Thu,P1,08:40,09:30,Psychology,A309,Ms Chen
+demo.user@example.com,Demo Student,Y10,A,Thu,P2,09:30,10:20,Psychology,A309,Ms Chen
+demo.user@example.com,Demo Student,Y10,A,Thu,P3,10:40,11:30,English,A221,Ms Carter
+demo.user@example.com,Demo Student,Y10,A,Thu,P4,11:30,12:20,Bahasa Malaysia,A205,Mr Rahman
+demo.user@example.com,Demo Student,Y10,A,Thu,P5,13:10,14:00,Computer Science,A115,Ms Morgan
+demo.user@example.com,Demo Student,Y10,A,Thu,P6,14:00,14:50,Chemistry,A320,Dr Shah
+demo.user@example.com,Demo Student,Y10,A,Fri,F,08:00,08:40,Key Stage 4 Form,A116,Ms Taylor
+demo.user@example.com,Demo Student,Y10,A,Fri,P1,08:40,09:30,Mathematics,A120,Mr Lee
+demo.user@example.com,Demo Student,Y10,A,Fri,P2,09:30,10:20,Mathematics,A120,Mr Lee
+demo.user@example.com,Demo Student,Y10,A,Fri,P3,10:40,11:30,Computer Science,A109,Ms Morgan
+demo.user@example.com,Demo Student,Y10,A,Fri,P4,11:30,12:20,English,A221,Ms Carter
+demo.user@example.com,Demo Student,Y10,B,Mon,F,08:00,08:40,Key Stage 4 Form,A116,Ms Taylor
+demo.user@example.com,Demo Student,Y10,B,Mon,P1,08:40,09:30,Chemistry,A320,Dr Shah
+demo.user@example.com,Demo Student,Y10,B,Mon,P2,09:30,10:20,Economics,A105,Mr Kumar
+demo.user@example.com,Demo Student,Y10,B,Mon,P3,10:40,11:30,English,A221,Ms Carter
+demo.user@example.com,Demo Student,Y10,B,Mon,P4,11:30,12:20,Psychology,A309,Ms Chen
+demo.user@example.com,Demo Student,Y10,B,Mon,P5,13:10,14:00,Mathematics,A120,Mr Lee
+demo.user@example.com,Demo Student,Y10,B,Mon,P6,14:00,14:50,Mathematics,A120,Mr Lee
+demo.user@example.com,Demo Student,Y10,B,Tue,F,08:00,08:40,Key Stage 4 Form,A116,Ms Taylor
+demo.user@example.com,Demo Student,Y10,B,Tue,P1,08:40,09:30,Psychology,A309,Ms Chen
+demo.user@example.com,Demo Student,Y10,B,Tue,P2,09:30,10:20,English,A221,Ms Carter
+demo.user@example.com,Demo Student,Y10,B,Tue,P3,10:40,11:30,Chemistry,A320,Dr Shah
+demo.user@example.com,Demo Student,Y10,B,Tue,P4,11:30,12:20,Economics,A105,Mr Kumar
+demo.user@example.com,Demo Student,Y10,B,Tue,P5,13:10,14:00,Computer Science,A115,Ms Morgan
+demo.user@example.com,Demo Student,Y10,B,Tue,P6,14:00,14:50,Mathematics,A120,Mr Lee
+demo.user@example.com,Demo Student,Y10,B,Wed,F,08:00,08:40,Key Stage 4 Form,A116,Ms Taylor
+demo.user@example.com,Demo Student,Y10,B,Wed,P1,08:40,09:30,Bahasa Malaysia,A205,Mr Rahman
+demo.user@example.com,Demo Student,Y10,B,Wed,P2,09:30,10:20,Economics,A105,Mr Kumar
+demo.user@example.com,Demo Student,Y10,B,Wed,P3,10:40,11:30,Physics,A304,Mr Brown
+demo.user@example.com,Demo Student,Y10,B,Wed,P4,11:30,12:20,Chemistry,A320,Dr Shah
+demo.user@example.com,Demo Student,Y10,B,Wed,P5,13:10,14:00,Computer Science,A115,Ms Morgan
+demo.user@example.com,Demo Student,Y10,B,Wed,P6,14:00,14:50,Mathematics,A120,Mr Lee
+demo.user@example.com,Demo Student,Y10,B,Thu,F,08:00,08:40,Key Stage 4 Form,A116,Ms Taylor
+demo.user@example.com,Demo Student,Y10,B,Thu,P1,08:40,09:30,Chemistry,A320,Dr Shah
+demo.user@example.com,Demo Student,Y10,B,Thu,P2,09:30,10:20,Economics,A105,Mr Kumar
+demo.user@example.com,Demo Student,Y10,B,Thu,P3,10:40,11:30,PSHE,A213,Ms Garcia
+demo.user@example.com,Demo Student,Y10,B,Thu,P4,11:30,12:20,Bahasa Malaysia,A205,Mr Rahman
+demo.user@example.com,Demo Student,Y10,B,Thu,P5,13:10,14:00,Physics,A304,Mr Brown
+demo.user@example.com,Demo Student,Y10,B,Thu,P6,14:00,14:50,Psychology,A309,Ms Chen
+demo.user@example.com,Demo Student,Y10,B,Fri,F,08:00,08:40,Key Stage 4 Form,A116,Ms Taylor
+demo.user@example.com,Demo Student,Y10,B,Fri,P1,08:40,09:30,PE,MPI,Mr Clarke
+demo.user@example.com,Demo Student,Y10,B,Fri,P2,09:30,10:20,PE,MPI,Mr Clarke
+demo.user@example.com,Demo Student,Y10,B,Fri,P3,10:40,11:30,English,A221,Ms Carter
+demo.user@example.com,Demo Student,Y10,B,Fri,P4,11:30,12:20,Computer Science,A115,Ms Morgan
