@@ -505,8 +505,8 @@ html:not(.authed) .login-screen{display:flex}
   .floor-btn .fd{width:7px;height:7px;margin-right:5px}
   .desktop-pan-hint{display:none}
   .mobile-pan-hint{display:inline}
-  /* The arrow projects 24px into the map; 144px leaves a clear 120px gap. */
-  .pan-hint{bottom:144px;padding:5px 10px;font-size:10px;max-width:calc(100% - 24px);white-space:normal;text-align:center}
+  /* The arrow projects 24px into the map; 54px leaves a clear 30px gap. */
+  .pan-hint{bottom:54px;padding:5px 10px;font-size:10px;max-width:calc(100% - 24px);white-space:normal;text-align:center}
   .tip{display:none}
   .mobile-sheet{position:relative;display:flex;flex-direction:column;flex-shrink:0;min-height:96px;max-height:30dvh;background:var(--forest);color:white;z-index:60;
     padding:18px max(12px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
