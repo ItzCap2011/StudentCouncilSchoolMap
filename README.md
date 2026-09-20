@@ -21,11 +21,11 @@ change the repository or affect another visitor.
 - Drag the map to pan, or pinch on a touch device to zoom.
 - Use the home button to reset the current floor view.
 
-## Mobile layout (v2.9.5)
+## Mobile layout (v2.9.6)
 
-The mobile map gesture hint now uses responsive vertical spacing and sits much
-higher above the timetable arrow. Depending on phone height, it clears the arrow
-by roughly 72–108px. Desktop positioning is unchanged.
+The mobile map gesture hint now clears the timetable arrow by a fixed 120px.
+The page requests `styles.css?v=2.9.6` so browsers fetch the new stylesheet
+instead of reusing one cached at the previous URL. Desktop positioning is unchanged.
 
 This release makes the phone floor controls more compact (32px high rather than
 44px), and uses a bold two-arrow week-switch icon matching the supplied design.

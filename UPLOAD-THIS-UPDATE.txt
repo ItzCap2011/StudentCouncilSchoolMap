@@ -1,6 +1,8 @@
-GITHUB PAGES MOBILE UPDATE — v2.9.5
+GITHUB PAGES MOBILE UPDATE — v2.9.6
 
-The mobile gesture hint now sits substantially farther above the timetable arrow.
+The mobile gesture hint now has a fixed 120px gap above the timetable arrow.
+The index.html file requests a versioned stylesheet to refresh cached CSS.
+Upload BOTH index.html and styles.css as part of this update.
 Smaller mobile floor buttons and the two-arrow Week A/B switch icon are included.
 This cumulative update also includes the mobile layout introduced in v2.9.2.
 
@@ -30,6 +32,9 @@ Open the published GitHub Pages URL on your phone. The phone layout appears
 automatically. Tap the bottom arrow to show/hide the timetable, tap a lesson to
 locate it, tap Week A/B to switch weeks, and tap the account name for account
 options. Drag the map with one finger; pinch with two fingers to zoom.
+
+After the deployment finishes, open this fresh link on your phone:
+https://itzcap2011.github.io/StudentCouncilSchoolMap/?v=2.9.6
 
 The complete ZIP contains the whole static project if you prefer a fresh upload.
 Do not upload the separate full-stack edition or private credentials to Pages.

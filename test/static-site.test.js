@@ -15,7 +15,7 @@ test('all first-party page assets use repository-relative URLs', () => {
     'styles.css', 'powiis.png', 'static-api.js', 'map.js',
     'app.js', 'admin-filters.js', 'admin.js',
   ]) {
-    assert.match(html, new RegExp(`(?:src|href)="\\./${asset.replace('.', '\\.')}"`));
+    assert.match(html, new RegExp(`(?:src|href)="\\./${asset.replace('.', '\\.')}(?:\\?[^"\\s]*)?"`));
     assert.equal(fs.existsSync(path.join(root, asset)), true);
   }
 });
