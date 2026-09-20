@@ -1,0 +1,31 @@
+GITHUB PAGES MOBILE UPDATE — v2.9.2
+
+If the full GitHub Pages project is already in your repository, upload and
+replace the following files, preserving the test/ folder:
+
+  index.html
+  app.js
+  map.js
+  styles.css
+  package.json
+  README.md
+  UPLOAD-THIS-UPDATE.txt
+  test/static-site.test.js
+  test/map-interactions.test.js
+
+Extract the update ZIP first. Upload its CONTENTS into your existing repository,
+not the ZIP itself or a new enclosing folder. Keep the existing data/, fonts/,
+logo and other files. No credentials or server commands are needed.
+
+Commit the replacements to the main branch. The existing GitHub Pages workflow
+will redeploy automatically. Open the Actions tab and wait for the deployment
+to turn green, then refresh the website. If you use branch-based Pages publishing
+instead, keep your existing publishing source unchanged.
+
+Open the published GitHub Pages URL on your phone. The phone layout appears
+automatically. Tap the bottom arrow to show/hide the timetable, tap a lesson to
+locate it, tap Week A/B to switch weeks, and tap the account name for account
+options. Drag the map with one finger; pinch with two fingers to zoom.
+
+The complete ZIP contains the whole static project if you prefer a fresh upload.
+Do not upload the separate full-stack edition or private credentials to Pages.

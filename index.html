@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
 <title>POWIIS Balik Pulau — Campus Navigator</title>
@@ -72,6 +72,16 @@
 
 <!-- ================= APP ================= -->
 <div id="app">
+<header class="mobile-header" aria-label="Timetable overview">
+  <div class="mobile-clock">
+    <div class="mobile-time"><span id="mobile-clock-hm">12:00</span> <span id="mobile-clock-ampm">pm</span></div>
+    <div id="mobile-date">Loading…</div>
+  </div>
+  <div class="mobile-identity">
+    <button id="mobile-week" type="button" aria-label="Switch to Week B"><span id="mobile-week-name">Week A</span><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5-5 5 5 5M3 10h18M16 9l5 5-5 5M21 14H3"/></svg></button>
+    <button id="mobile-account" type="button" aria-haspopup="dialog" aria-controls="mobile-account-dialog"><span id="mobile-name">Demo Student</span><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><span class="sr-only"> — account options</span></button>
+  </div>
+</header>
 <aside class="sidebar">
   <div class="school-header">
     <div class="hi">
@@ -112,7 +122,7 @@
     </div>
     <div class="toggle-wrap">
       <span class="wk-letter on" id="lbl-a">A</span>
-      <label class="toggle-sw"><input type="checkbox" id="week-toggle"><span class="sl"></span></label>
+      <label class="toggle-sw"><input type="checkbox" id="week-toggle" aria-label="Use Week B timetable"><span class="sl"></span></label>
       <span class="wk-letter" id="lbl-b">B</span>
     </div>
   </div>
@@ -226,7 +236,8 @@
       <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M12 2v20"/><path d="m15 19-3 3-3-3"/><path d="m19 9 3 3-3 3"/><path d="M2 12h20"/><path d="m5 9-3 3 3 3"/><path d="m9 5 3-3 3 3"/>
       </svg>
-      Swipe or wheel to pan · Pinch to zoom · Drag to pan
+      <span class="desktop-pan-hint">Scroll to zoom · Drag to pan · Pinch to zoom</span>
+      <span class="mobile-pan-hint">Pinch to zoom · Drag to move</span>
     </div>
 
 <div class="floor-map active" id="floor-0">
@@ -598,6 +609,23 @@
     <div class="tip" id="tip"></div>
   </div>
 </main>
+
+<section class="mobile-sheet" aria-label="Location and timetable">
+  <button id="mobile-sheet-toggle" class="mobile-sheet-toggle" type="button" aria-expanded="false" aria-controls="mobile-schedule" aria-label="Show timetable">
+    <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>
+  </button>
+  <div class="mobile-location" id="mobile-location">
+    <div id="mobile-room">Campus map</div>
+    <div id="mobile-lesson">Select a classroom to explore</div>
+    <div id="mobile-floor"></div>
+  </div>
+  <div id="mobile-schedule" hidden></div>
+</section>
+
+<dialog id="mobile-account-dialog" class="mobile-account-dialog" aria-labelledby="mobile-account-title">
+  <div class="mobile-account-heading"><h2 id="mobile-account-title">Your account</h2><button id="mobile-account-close" type="button" aria-label="Close account options"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
+  <div id="mobile-account-content"></div>
+</dialog>
 
 <dialog class="admin-modal" id="admin-modal" aria-labelledby="admin-title">
   <div class="admin-shell">

@@ -313,3 +313,91 @@ setTimeout(() => {
     markLoaded();
   }
 }, 8000);
+
+/* Move the existing schedule and account controls into the phone layout.
+ * One set of controls keeps desktop, phone and rotation state in sync. */
+document.addEventListener('DOMContentLoaded', () => {
+  const media = window.matchMedia('(max-width: 820px), (max-width: 1024px) and (pointer: coarse) and (max-height: 600px)');
+  const app = document.getElementById('app');
+  const schedule = document.getElementById('mobile-schedule');
+  const toggle = document.getElementById('mobile-sheet-toggle');
+  const accountDialog = document.getElementById('mobile-account-dialog');
+  const accountContent = document.getElementById('mobile-account-content');
+  const weekToggle = document.getElementById('week-toggle');
+  const placements = [
+    [document.getElementById('tt-sec'), schedule],
+    [document.querySelector('.user-chip'), accountContent],
+    [document.getElementById('admin-tab'), accountContent],
+  ].map(([node, destination]) => {
+    const marker = document.createComment('desktop control position');
+    node.before(marker);
+    return { node, destination, marker };
+  });
+
+  function setSheet(open) {
+    const expanded = media.matches && open;
+    // Return focus before hiding a schedule control activated with a keyboard.
+    if (!expanded && schedule.contains(document.activeElement)) toggle.focus();
+    app.classList.toggle('mobile-sheet-open', expanded);
+    toggle.setAttribute('aria-expanded', String(expanded));
+    toggle.setAttribute('aria-label', expanded ? 'Hide timetable' : 'Show timetable');
+    schedule.hidden = !expanded;
+    document.getElementById('mobile-location').hidden = expanded;
+  }
+
+  function syncOverview() {
+    const content = (id) => document.getElementById(id)?.textContent ?? '';
+    const mirror = (target, source) => {
+      const node = document.getElementById(target);
+      const value = content(source);
+      if (node.textContent !== value) node.textContent = value;
+    };
+    mirror('mobile-clock-hm', 'clock-hm');
+    document.getElementById('mobile-clock-ampm').textContent = content('clock-ampm').toLowerCase();
+    mirror('mobile-date', 'date-display');
+    mirror('mobile-week-name', 'wk-name');
+    mirror('mobile-name', 'uc-name');
+    mirror('mobile-room', 'lcr');
+    mirror('mobile-lesson', 'lct');
+    mirror('mobile-floor', 'floor-tag');
+    document.getElementById('mobile-week').setAttribute('aria-label', `Switch to Week ${weekToggle.checked ? 'A' : 'B'}`);
+  }
+
+  function applyLayout() {
+    if (accountDialog.open) accountDialog.close();
+    placements.forEach(({ node, destination, marker }) => {
+      if (media.matches) destination.appendChild(node);
+      else marker.after(node);
+    });
+    setSheet(false);
+    syncOverview();
+  }
+
+  toggle.addEventListener('click', () => setSheet(toggle.getAttribute('aria-expanded') !== 'true'));
+  document.getElementById('mobile-week').addEventListener('click', () => {
+    weekToggle.checked = !weekToggle.checked;
+    weekToggle.dispatchEvent(new Event('change', { bubbles: true }));
+    syncOverview();
+  });
+  document.getElementById('mobile-account').addEventListener('click', () => accountDialog.showModal());
+  document.getElementById('mobile-account-close').addEventListener('click', () => accountDialog.close());
+  accountDialog.addEventListener('close', () => {
+    if (media.matches && !document.querySelector('#admin-modal[open]')) document.getElementById('mobile-account').focus();
+  });
+  document.getElementById('admin-toggle').addEventListener('click', () => accountDialog.close(), { capture: true });
+  document.addEventListener('map:room-selected', () => {
+    if (media.matches) setSheet(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && app.classList.contains('mobile-sheet-open') && !document.querySelector('dialog[open]')) {
+      setSheet(false);
+      toggle.focus();
+    }
+  });
+  const observer = new MutationObserver(syncOverview);
+  ['clock-hm', 'clock-ampm', 'date-display', 'wk-name', 'uc-name', 'lcr', 'lct', 'floor-tag'].forEach((id) => {
+    observer.observe(document.getElementById(id), { childList: true, characterData: true, subtree: true });
+  });
+  media.addEventListener('change', applyLayout);
+  applyLayout();
+});
