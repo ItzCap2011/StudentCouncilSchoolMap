@@ -1,6 +1,7 @@
-GITHUB PAGES MOBILE UPDATE — v2.9.3
+GITHUB PAGES MOBILE UPDATE — v2.9.4
 
-Smaller mobile floor buttons and a new two-arrow Week A/B switch icon.
+The mobile gesture hint now sits farther above the timetable arrow.
+Smaller mobile floor buttons and the two-arrow Week A/B switch icon are included.
 This cumulative update also includes the mobile layout introduced in v2.9.2.
 
 If the full GitHub Pages project is already in your repository, upload and

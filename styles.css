@@ -505,7 +505,8 @@ html:not(.authed) .login-screen{display:flex}
   .floor-btn .fd{width:7px;height:7px;margin-right:5px}
   .desktop-pan-hint{display:none}
   .mobile-pan-hint{display:inline}
-  .pan-hint{bottom:22px;padding:5px 10px;font-size:10px;max-width:calc(100% - 24px);white-space:normal;text-align:center}
+  /* Keep the touch instructions clear of the bottom-sheet arrow. */
+  .pan-hint{bottom:56px;padding:5px 10px;font-size:10px;max-width:calc(100% - 24px);white-space:normal;text-align:center}
   .tip{display:none}
   .mobile-sheet{position:relative;display:flex;flex-direction:column;flex-shrink:0;min-height:96px;max-height:30dvh;background:var(--forest);color:white;z-index:60;
     padding:18px max(12px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
