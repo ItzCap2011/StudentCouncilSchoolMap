@@ -21,7 +21,12 @@ change the repository or affect another visitor.
 - Drag the map to pan, or pinch on a touch device to zoom.
 - Use the home button to reset the current floor view.
 
-## Mobile layout (v2.9.2)
+## Mobile layout (v2.9.3)
+
+This release makes the phone floor controls more compact (32px high rather than
+44px), and uses a bold two-arrow week-switch icon matching the supplied design.
+The icon is an inline vector in white, so it stays sharp against the green header
+without a white image background. Desktop floor controls are unchanged.
 
 The layout switches automatically at phone/narrow-screen widths (up to 820px),
 and on touch phones in landscape up to 1024px wide and 600px high. No separate

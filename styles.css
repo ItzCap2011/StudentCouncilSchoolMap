@@ -493,15 +493,16 @@ html:not(.authed) .login-screen{display:flex}
   #mobile-account{font-weight:700;font-size:clamp(16px,4.6vw,24px);line-height:1.2}
   #mobile-name{overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
   .mobile-identity .ui-icon{width:14px;height:14px;opacity:.7}
+  #mobile-week .week-swap-icon{width:22px;height:22px;flex-shrink:0;stroke-width:2.8;opacity:1}
   .map-area{width:100%;flex:1;overflow:hidden}
   .map-topbar{position:absolute;top:10px;right:max(10px,env(safe-area-inset-right));border:0;padding:0;background:none;z-index:55}
   .map-title,.legend{display:none}
   .map-ctrl{flex-direction:column;gap:6px}
   .ctrl-btn{width:44px;height:44px;border-radius:10px;background:rgba(5,20,10,.92)}
   .ctrl-btn .ui-icon{width:19px;height:19px}
-  .floor-sw{top:10px;left:max(10px,env(safe-area-inset-left));gap:5px}
-  .floor-btn{min-height:44px;padding:7px 10px;font-size:12px;border-radius:9px}
-  .floor-btn .fd{width:9px;height:9px;margin-right:7px}
+  .floor-sw{top:10px;left:max(10px,env(safe-area-inset-left));gap:4px}
+  .floor-btn{min-height:32px;padding:5px 8px;font-size:10.5px;border-radius:7px}
+  .floor-btn .fd{width:7px;height:7px;margin-right:5px}
   .desktop-pan-hint{display:none}
   .mobile-pan-hint{display:inline}
   .pan-hint{bottom:22px;padding:5px 10px;font-size:10px;max-width:calc(100% - 24px);white-space:normal;text-align:center}
@@ -571,7 +572,7 @@ html:not(.authed) .login-screen{display:flex}
   #mobile-account{font-size:18px}
   .mobile-sheet{min-height:72px;padding-top:16px;padding-bottom:max(5px,env(safe-area-inset-bottom))}
   .floor-sw{display:grid;grid-template-columns:1fr 1fr;gap:4px}
-  .floor-btn{font-size:11px}
+  .floor-btn{font-size:10.5px}
   .map-ctrl{flex-direction:row}
   .pan-hint{display:none}
 }
