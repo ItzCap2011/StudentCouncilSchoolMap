@@ -23,7 +23,10 @@ change the repository or affect another visitor.
 - Drag the map to pan, or pinch on a touch device to zoom.
 - Use the home button to reset the current floor view.
 
-## Mobile layout (v2.9.9)
+## Mobile layout (v2.9.11)
+
+All three entry buttons share a neutral idle appearance; Administrator no longer
+has a permanent green highlight. Hover and keyboard-focus feedback still work.
 
 The mobile map gesture hint now clears the timetable arrow by a fixed 15px.
 The stylesheet and updated application scripts use versioned URLs so browsers

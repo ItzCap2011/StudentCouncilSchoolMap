@@ -1,4 +1,9 @@
-GITHUB PAGES GUEST MODE UPDATE — v2.9.9
+GITHUB PAGES UPDATE — v2.9.11
+
+Fixes the Administrator button's permanent green background and border.
+All three home-menu buttons now share the same idle and interaction styling.
+
+Administrator home-menu subtext: Manage students’ timetables and personalise.
 
 Adds a third Guest button for browsing the campus map without a timetable.
 Guest mode has no week switch, schedule, lesson status or timetable arrow.
@@ -40,7 +45,7 @@ locate it, tap Week A/B to switch weeks, and tap the account name for account
 options. Drag the map with one finger; pinch with two fingers to zoom.
 
 After the deployment finishes, open this fresh link on your phone:
-https://itzcap2011.github.io/StudentCouncilSchoolMap/?v=2.9.9
+https://itzcap2011.github.io/StudentCouncilSchoolMap/?v=2.9.11
 
 The complete ZIP contains the whole static project if you prefer a fresh upload.
 Do not upload the separate full-stack edition or private credentials to Pages.

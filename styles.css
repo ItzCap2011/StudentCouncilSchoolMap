@@ -305,7 +305,6 @@ code{background:#e4ece4;padding:1px 5px;border-radius:3px;font-size:10px;font-fa
   cursor:pointer;transition:all .18s}
 .demo-account:hover{border-color:var(--mid);background:#f5faf6;box-shadow:0 3px 10px rgba(0,55,24,.1);transform:translateY(-1px)}
 .demo-account:focus-visible{outline:3px solid rgba(4,98,40,.25);outline-offset:2px}
-.demo-account-admin{border-color:#8db999;background:#f3f9f4}
 .demo-role{font-size:13px;font-weight:750;color:var(--forest)}
 .demo-description{font-size:10.5px;line-height:1.45;color:var(--muted)}
 .demo-warning{font-size:9.5px;line-height:1.45;color:var(--muted);text-align:center;margin-top:2px}
