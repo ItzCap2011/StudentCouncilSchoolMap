@@ -31,6 +31,13 @@
       picture: '',
       isAdmin: true,
     },
+    guest: {
+      email: '',
+      name: 'Guest',
+      picture: '',
+      isAdmin: false,
+      isGuest: true,
+    },
   };
 
   window.__STATIC_DEMO__ = true;
@@ -62,6 +69,7 @@
     });
   }
   document.documentElement.classList.toggle('authed', Boolean(account));
+  document.documentElement.classList.toggle('guest-mode', Boolean(account?.isGuest));
 
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('form[action="./"][data-demo-account]').forEach((form) => {
@@ -98,6 +106,8 @@
     const method = String(init.method ?? 'GET').toUpperCase();
     const activeAccount = selectedAccount();
     if (!activeAccount) return json({ error: 'unauthenticated' }, 401);
+    // Guest browsing never needs to load or change the demo roster.
+    if (activeAccount.isGuest) return json({ error: 'forbidden' }, 403);
 
     const rows = await loadRows();
     const index = buildIndex(rows);

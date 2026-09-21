@@ -7,10 +7,10 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
 <title>POWIIS Balik Pulau — Campus Navigator</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lora:wght@600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css?v=2.9.8">
+<link rel="stylesheet" href="./styles.css?v=2.9.9">
 <link rel="icon" href="./powiis.png">
 <script id="bootstrap" type="application/json">{"authenticated":false,"user":null,"timetable":null,"error":null}</script>
-<script src="./static-api.js"></script>
+<script src="./static-api.js?v=2.9.9"></script>
 </head>
 <body>
 <!-- Any JavaScript error or CSP violation is reported here, visibly. -->
@@ -45,6 +45,13 @@
         <button class="demo-account demo-account-admin" type="submit">
           <span class="demo-role">Administrator</span>
           <span class="demo-description">Open the student and timetable management panel</span>
+        </button>
+      </form>
+      <form method="post" action="./" data-demo-account="guest">
+        <input type="hidden" name="account" value="guest">
+        <button class="demo-account demo-account-guest" type="submit">
+          <span class="demo-role">Guest</span>
+          <span class="demo-description">Explore the campus map without a timetable</span>
         </button>
       </form>
       <div class="demo-warning">Synthetic demo data only. No password or Google account is required.</div>
@@ -797,7 +804,7 @@
 </div><!-- /#app -->
 
 <script src="./map.js"></script>
-<script src="./app.js"></script>
+<script src="./app.js?v=2.9.9"></script>
 <script src="./admin-filters.js"></script>
 <script src="./admin.js"></script>
 </body>

@@ -8,8 +8,10 @@ OAuth credentials, tokens, or local computer are required after deployment.
 
 - **User** — opens a synthetic Year 10 timetable and the interactive map.
 - **Administrator** — opens the latest student/timetable management panel.
+- **Guest** — browse floors and select rooms without a timetable, Week A/B
+  controls, lesson status, or a timetable drawer. The roster is not loaded.
 
-Both choices are public demo identities, not real accounts. Administrator
+These choices are public demo modes, not real accounts. Administrator
 imports and deletions are stored only in that visitor's browser. They do not
 change the repository or affect another visitor.
 
@@ -21,11 +23,16 @@ change the repository or affect another visitor.
 - Drag the map to pan, or pinch on a touch device to zoom.
 - Use the home button to reset the current floor view.
 
-## Mobile layout (v2.9.8)
+## Mobile layout (v2.9.9)
 
 The mobile map gesture hint now clears the timetable arrow by a fixed 15px.
-The page requests `styles.css?v=2.9.8` so browsers fetch the new stylesheet
-instead of reusing one cached at the previous URL. Desktop positioning is unchanged.
+The stylesheet and updated application scripts use versioned URLs so browsers
+fetch the new guest-mode release. Desktop positioning is unchanged.
+
+In Guest mode, the phone header shows the time, date and Guest account menu.
+The bottom panel displays the selected room, with no timetable arrow. Tap the
+Guest name and choose **Exit guest mode** to return to the three mode choices.
+Desktop guests use the same exit button in the sidebar.
 
 This release makes the phone floor controls more compact (32px high rather than
 44px), and uses a bold two-arrow week-switch icon matching the supplied design.

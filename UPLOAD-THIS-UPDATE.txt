@@ -1,8 +1,12 @@
-GITHUB PAGES MOBILE UPDATE — v2.9.8
+GITHUB PAGES GUEST MODE UPDATE — v2.9.9
+
+Adds a third Guest button for browsing the campus map without a timetable.
+Guest mode has no week switch, schedule, lesson status or timetable arrow.
+Room selection, floor switching, pan and zoom remain available.
 
 The mobile gesture hint now has a fixed 15px gap above the timetable arrow.
 The index.html file requests a versioned stylesheet to refresh cached CSS.
-Upload BOTH index.html and styles.css as part of this update.
+Upload ALL included files: the guest feature also requires app.js and static-api.js.
 Smaller mobile floor buttons and the two-arrow Week A/B switch icon are included.
 This cumulative update also includes the mobile layout introduced in v2.9.2.
 
@@ -11,6 +15,7 @@ replace the following files, preserving the test/ folder:
 
   index.html
   app.js
+  static-api.js
   map.js
   styles.css
   package.json
@@ -18,6 +23,7 @@ replace the following files, preserving the test/ folder:
   UPLOAD-THIS-UPDATE.txt
   test/static-site.test.js
   test/map-interactions.test.js
+  test/guest-mode.test.js
 
 Extract the update ZIP first. Upload its CONTENTS into your existing repository,
 not the ZIP itself or a new enclosing folder. Keep the existing data/, fonts/,
@@ -34,7 +40,7 @@ locate it, tap Week A/B to switch weeks, and tap the account name for account
 options. Drag the map with one finger; pinch with two fingers to zoom.
 
 After the deployment finishes, open this fresh link on your phone:
-https://itzcap2011.github.io/StudentCouncilSchoolMap/?v=2.9.8
+https://itzcap2011.github.io/StudentCouncilSchoolMap/?v=2.9.9
 
 The complete ZIP contains the whole static project if you prefer a fresh upload.
 Do not upload the separate full-stack edition or private credentials to Pages.

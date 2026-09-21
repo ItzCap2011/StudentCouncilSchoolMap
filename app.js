@@ -145,6 +145,18 @@ function init() {
 
   showApp(boot.user);
 
+  if (boot.user.isGuest) {
+    window.__TIMETABLE__ = null;
+    markLoaded();
+    setAppText('lcr', 'Campus map');
+    setAppText('lct', 'Select a room to see its location.');
+    setAppText('floor-tag', '');
+    document.querySelector('.lcl').textContent = 'Selected location';
+    document.querySelector('.mobile-header').setAttribute('aria-label', 'Campus overview');
+    document.querySelector('.mobile-sheet').setAttribute('aria-label', 'Selected location');
+    return;
+  }
+
   // FAST PATH — the server already embedded the timetable, so it renders
   // with no network call at all.
   if (boot.timetable) {
@@ -243,7 +255,8 @@ function showApp(me) {
 
   // textContent — never innerHTML. ASVS V1.3.1
   setAppText('uc-name', me.name || me.email);
-  setAppText('uc-mail', me.email);
+  setAppText('uc-mail', me.isGuest ? 'Explore the campus' : me.email);
+  setAppText('signout', me.isGuest ? 'Exit guest mode' : 'Sign out');
   document.getElementById('admin-tab')?.toggleAttribute('hidden', !me.isAdmin);
 
   if (me.picture) {
@@ -335,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function setSheet(open) {
-    const expanded = media.matches && open;
+    const expanded = media.matches && open && !document.documentElement.classList.contains('guest-mode');
     // Return focus before hiding a schedule control activated with a keyboard.
     if (!expanded && schedule.contains(document.activeElement)) toggle.focus();
     app.classList.toggle('mobile-sheet-open', expanded);

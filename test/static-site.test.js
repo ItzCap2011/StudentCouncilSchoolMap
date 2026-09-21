@@ -20,14 +20,17 @@ test('all first-party page assets use repository-relative URLs', () => {
   }
 });
 
-test('the page offers exactly one user and one administrator choice', () => {
+test('the page offers user, administrator and guest choices', () => {
   const roles = [...html.matchAll(/data-demo-account="([^"]+)"/g)].map((match) => match[1]);
-  assert.deepEqual(roles, ['user', 'admin']);
+  assert.deepEqual(roles, ['user', 'admin', 'guest']);
   assert.match(html, /data-google-auth hidden/);
 });
 
 test('the static data adapter runs before the application scripts', () => {
-  assert.ok(html.indexOf('src="./static-api.js"') < html.indexOf('src="./app.js"'));
+  const scripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)]
+    .map((match) => match[1].split('?')[0]);
+  assert.ok(scripts.indexOf('./static-api.js') >= 0);
+  assert.ok(scripts.indexOf('./static-api.js') < scripts.indexOf('./app.js'));
   assert.match(staticApi, /window\.__STATIC_DEMO__ = true/);
   assert.match(staticApi, /localStorage/);
   assert.match(staticApi, /\.\/data\/roster\.csv/);
